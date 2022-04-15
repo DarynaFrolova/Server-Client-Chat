@@ -1,9 +1,14 @@
 package com.example.chatlesson7.server;
 
+import com.example.chatlesson7.Command;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ClientHandler {
     private final Socket socket;
@@ -14,6 +19,8 @@ public class ClientHandler {
 
     private String nick;
 
+    private boolean isAuthenticatedWithTimeOut = true;
+
     public ClientHandler(Socket socket, ChatServer server, AuthService authService) {
         try {
             this.nick = "";
@@ -23,14 +30,32 @@ public class ClientHandler {
             this.out = new DataOutputStream(socket.getOutputStream());
             this.authService = authService;
 
-            new Thread(() -> {
+            // Отключение неавторизованных пользователей по тайм-ауту 120 сек.
+            Thread thread = new Thread(() -> {
+
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
+                executorService.submit(() -> authenticate());
+                executorService.shutdown();
                 try {
-                    authenticate();
-                    readMessages();
-                } finally {
-                    closeConnection();
+                    if (!executorService.awaitTermination(120, TimeUnit.SECONDS)) {
+                        isAuthenticatedWithTimeOut = false;
+                        closeConnection();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            }).start();
+
+                if (isAuthenticatedWithTimeOut) {
+                    try {
+                        readMessages();
+                    } finally {
+                        closeConnection();
+                    }
+                }
+            }
+            );
+            thread.setDaemon(true);
+            thread.start();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -57,7 +82,9 @@ public class ClientHandler {
         try {
             if (socket != null) {
                 server.unsubscribe(this);
-                server.broadcast("Пользователь " + nick + " покинул чат");
+                if (isAuthenticatedWithTimeOut) {
+                    server.broadcast("User " + nick + " has left the chat");
+                }
                 socket.close();
             }
         } catch (IOException e) {
@@ -68,30 +95,40 @@ public class ClientHandler {
     private void authenticate() {
         while (true) {
             try {
+                if (!isAuthenticatedWithTimeOut) {
+                    break;
+                }
                 final String str = in.readUTF();
-                if (str.startsWith("/auth")) {
-                    final String[] split = str.split(" ");
-                    final String login = split[1];
-                    final String password = split[2];
-                    final String nick = authService.getNickByLoginAndPassword(login, password);
-                    if (nick != null) {
-                        if (server.isNickBusy(nick)) {
-                            sendMessage("Пользователь уже авторизован");
-                            continue;
+                if (Command.isCommand(str)) {
+                    final Command command = Command.getCommand(str);
+                    final String[] params = command.parse(str);
+                    if (command == Command.AUTH) {
+                        final String login = params[0];
+                        final String password = params[1];
+                        final String nick = authService.getNickByLoginAndPassword(login, password);
+                        if (nick != null) {
+                            if (server.isNickBusy(nick)) {
+                                sendMessage(Command.ERROR, "User is already authorized");
+                                continue;
+                            }
+                            sendMessage(Command.AUTHOK, nick);
+                            this.nick = nick;
+                            server.broadcast("User " + nick + " has entered the chat");
+                            server.subscribe(this);
+                            break;
+                        } else {
+                            sendMessage(Command.ERROR, "Wrong login and password");
                         }
-                        sendMessage("/authok " + nick);
-                        this.nick = nick;
-                        server.broadcast("Пользователь " + nick + " зашел в чат");
-                        server.subscribe(this);
-                        break;
-                    } else {
-                        sendMessage("Неверные логин и пароль");
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void sendMessage(Command command, String... params) {
+        sendMessage(command.collectMessage(params));
     }
 
     public void sendMessage(String message) {
@@ -108,23 +145,18 @@ public class ClientHandler {
             while (true) {
                 final String msg = in.readUTF();
                 System.out.println("Receive message: " + msg);
-                if ("/end".equals(msg)) {
-                    break;
-                }
-
-                // Private messages
-                if (msg.startsWith("/w")) {
-                    String[] array = msg.split(" ");
-                    String to = array [1];
-                    StringBuilder message = new StringBuilder();
-                    for (int i = 2; i < array.length; i++) {
-                        message.append(array[i]).append(" ");
+                if (Command.isCommand(msg)) {
+                    final Command command = Command.getCommand(msg);
+                    final String[] params = command.parse(msg);
+                    if (command == Command.END) {
+                        break;
                     }
-                    server.privateMsg(this, to, String.valueOf(message)); // сообщение участниками диалога
-                } else {
-                    server.broadcast(nick + ": " + msg);
+                    if (command == Command.PRIVATE_MESSAGE) {
+                        server.sendMessageToClient(this, params[0], params[1]);
+                        continue;
+                    }
                 }
-
+                server.broadcast(nick + ": " + msg);
             }
         } catch (IOException e) {
             e.printStackTrace();

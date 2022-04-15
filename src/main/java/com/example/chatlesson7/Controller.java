@@ -2,18 +2,19 @@ package com.example.chatlesson7;
 
 import java.util.Optional;
 
+
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 public class Controller {
 
+    private final ChatClient client;
+    @FXML
+    private ListView<String> clientList;
     @FXML
     private HBox messageBox;
     @FXML
@@ -26,8 +27,6 @@ public class Controller {
     private TextField textField;
     @FXML
     private TextArea textArea;
-
-    private final ChatClient client;
 
     public Controller() {
         client = new ChatClient(this);
@@ -56,8 +55,9 @@ public class Controller {
     }
 
     public void btnAuthClick(ActionEvent actionEvent) {
-        client.sendMessage("/auth " + loginField.getText() + " " + passwordField.getText());
+        client.sendMessage(Command.AUTH, loginField.getText(), passwordField.getText());
     }
+
     public void passwordEnter(ActionEvent actionEvent) {
         client.sendMessage("/auth " + loginField.getText() + " " + passwordField.getText());
     }
@@ -70,15 +70,38 @@ public class Controller {
 
     private void showNotification() {
         final Alert alert = new Alert(Alert.AlertType.ERROR,
-                "Не могу подключится к серверу.\n" +
-                        "Проверьте, что сервер запущен",
-                new ButtonType("Попробовать еще", ButtonBar.ButtonData.OK_DONE),
-                new ButtonType("Выйти", ButtonBar.ButtonData.CANCEL_CLOSE));
-        alert.setTitle("Ошибка подключения");
+                "Server Not Found \n" +
+                        "Make sure that server has been started",
+                new ButtonType("Try once more", ButtonBar.ButtonData.OK_DONE),
+                new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE));
+        alert.getDialogPane().setStyle("-fx-font-family: 'serif'");
+        alert.setTitle("Connection error");
         final Optional<ButtonType> buttonType = alert.showAndWait();
         final Boolean isExit = buttonType.map(btn -> btn.getButtonData().isCancelButton()).orElse(false);
         if (isExit) {
             System.exit(0);
         }
+    }
+
+    public void showError(String[] error) {
+        final Alert alert = new Alert(Alert.AlertType.ERROR, error[0]);
+        alert.setTitle("Error!");
+        alert.getDialogPane().setStyle("-fx-font-family: 'serif'");
+        alert.showAndWait();
+    }
+
+    public void selectClient(MouseEvent mouseEvent) {
+        if (mouseEvent.getClickCount() == 2) { // /w nick1 private message
+            final String message = textField.getText();
+            final String nick = clientList.getSelectionModel().getSelectedItem();
+            textField.setText(Command.PRIVATE_MESSAGE.collectMessage(nick, message));
+            textField.requestFocus();
+            textField.selectEnd();
+        }
+    }
+
+    public void updateClientList(String[] params) {
+        Platform.runLater(() -> clientList.getItems().clear());
+        Platform.runLater(() -> clientList.getItems().addAll(params));
     }
 }

@@ -1,5 +1,7 @@
 package com.example.chatlesson7.server;
 
+import com.example.chatlesson7.Command;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -34,25 +36,39 @@ public class ChatServer {
 
     public void subscribe(ClientHandler client) {
         clients.put(client.getNick(), client);
+        broadcastClientList();
     }
 
     public void unsubscribe(ClientHandler client) {
         clients.remove(client.getNick());
+        broadcastClientList();
     }
 
     public void broadcast(String msg) {
         clients.values().forEach(client -> client.sendMessage(msg));
     }
 
-    // Private messages
-    public void privateMsg(ClientHandler from, String to, String msg)
-    {
-        for (ClientHandler client: clients.values()) {
-            if(client.getNick().equals(to)) {
-                client.sendMessage("[Message from: " + from.getNick() + "] " + msg);
-                break;
-            }
+    private void broadcastClientList() {
+        StringBuilder nicks = new StringBuilder();
+        for (ClientHandler value : clients.values()) {
+            nicks.append(value.getNick()).append(" ");
         }
-        from.sendMessage("[Message to: " + to + "] " + msg);
+        broadcast(Command.CLIENTS, nicks.toString().trim());
+    }
+
+    private void broadcast(Command command, String nicks) {
+        for (ClientHandler client : clients.values()) {
+            client.sendMessage(command, nicks);
+        }
+    }
+
+    public void sendMessageToClient(ClientHandler sender, String to, String message) {
+        final ClientHandler receiver = clients.get(to);
+        if (receiver != null) {
+            receiver.sendMessage("from " + sender.getNick() + ": " + message);
+            sender.sendMessage("to " + to + ": " + message);
+        } else {
+            sender.sendMessage(Command.ERROR, "There is no user with nick " + to + " in chat!");
+        }
     }
 }
