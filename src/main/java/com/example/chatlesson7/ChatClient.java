@@ -1,5 +1,7 @@
 package com.example.chatlesson7;
 
+import javafx.application.Platform;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,11 +9,10 @@ import java.net.Socket;
 
 public class ChatClient {
 
+    private final Controller controller;
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
-
-    private final Controller controller;
 
     public ChatClient(Controller controller) {
         this.controller = controller;
@@ -26,14 +27,14 @@ public class ChatClient {
             try {
                 waitAuthenticate();
                 readMessage();
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             } finally {
                 closeConnection();
             }
         });
 
-        readThread.setDaemon(true); // A daemon thread is a thread that does not prevent the JVM from exiting when the program finishes but the thread is still running.
+        readThread.setDaemon(true);
         readThread.start();
 
     }
@@ -42,23 +43,41 @@ public class ChatClient {
         while (true) {
             final String message = in.readUTF();
             System.out.println("Receive message: " + message);
-            if ("/end".equals(message)) {
-                controller.setAuth(false);
-                break;
+            if (Command.isCommand(message)) {
+                final Command command = Command.getCommand(message);
+                final String[] params = command.parse(message);
+                if (command == Command.END) {
+                    controller.setAuth(false);
+                    break;
+                }
+                if (command == Command.ERROR) {
+                    Platform.runLater(() -> controller.showError(params));
+                    continue;
+                }
+                if (command == Command.CLIENTS) {
+                    controller.updateClientList(params);
+                    continue;
+                }
             }
             controller.addMessage(message);
         }
     }
 
-    private void waitAuthenticate() throws IOException {
+    private void waitAuthenticate() throws IOException, InterruptedException {
         while (true) {
             final String msgAuth = in.readUTF();
-            if (msgAuth.startsWith("/authok")) {
-                final String[] split = msgAuth.split(" ");
-                final String nick = split[1];
-                controller.addMessage("Успешная авторизация под ником " + nick);
-                controller.setAuth(true);
-                break;
+            if (Command.isCommand(msgAuth)) {
+                final Command command = Command.getCommand(msgAuth);
+                final String[] params = command.parse(msgAuth);
+                if (command == Command.AUTHOK) {
+                    final String nick = params[0];
+                    controller.addMessage("Successful authorization under nick " + nick);
+                    controller.setAuth(true);
+                    break;
+                }
+                if (Command.ERROR.equals(command)) {
+                    Platform.runLater(() -> controller.showError(params));
+                }
             }
         }
     }
@@ -95,5 +114,9 @@ public class ChatClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendMessage(Command command, String... params) {
+        sendMessage(command.collectMessage(params));
     }
 }
