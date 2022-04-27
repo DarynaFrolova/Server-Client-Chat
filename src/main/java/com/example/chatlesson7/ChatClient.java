@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 
 public class ChatClient {
 
@@ -30,7 +31,11 @@ public class ChatClient {
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                closeConnection();
+                try {
+                    closeConnection();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -58,6 +63,10 @@ public class ChatClient {
                     controller.updateClientList(params);
                     continue;
                 }
+                if (command == Command.NICK) {
+                    controller.addMessage("Nick successfully changed to " + params[0]);
+                    continue;
+                }
             }
             controller.addMessage(message);
         }
@@ -82,7 +91,7 @@ public class ChatClient {
         }
     }
 
-    private void closeConnection() {
+    private void closeConnection() throws SQLException {
         if (socket != null) {
             try {
                 socket.close();

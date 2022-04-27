@@ -60,13 +60,19 @@ public enum Command {
             }
             return nicks;
         }
+    },
+
+    NICK("/nick") {
+        @Override
+        public String[] parse(String commandText) { //  /nick new_nick
+            return new String[]{commandText.split(COMMAND_DELIMITER)[1]};
+        }
     };
 
     static final String COMMAND_DELIMITER = "\\s+";
     private static final Map<String, Command> map = Stream.of(Command.values())
             .collect(Collectors.toMap(Command::getCommand, Function.identity()));
-    private String command;
-    private String[] params = new String[0];
+    private final String command;
 
     Command(String command) {
         this.command = command;
@@ -83,17 +89,13 @@ public enum Command {
         }
         final int index = message.indexOf(" ");
 
-       String cmd = index > 0 ? message.substring(0, index) : message;
+        String cmd = index > 0 ? message.substring(0, index) : message;
 
         final Command command = map.get(cmd);
         if (command == null) {
             throw new RuntimeException("'" + cmd + "' unknown command");
         }
         return command;
-    }
-
-    public String[] getParams() {
-        return params;
     }
 
     public String getCommand() {

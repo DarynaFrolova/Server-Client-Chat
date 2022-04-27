@@ -5,6 +5,7 @@ import com.example.chatlesson7.Command;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,14 +19,15 @@ public class ChatServer {
 
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(8189);
-             AuthService authService = new InMemoryAuthService()) {
+             AuthService authService = new DataBase()) {
+            authService.run();
             while (true) {
                 System.out.println("Wait client connection...");
                 final Socket socket = serverSocket.accept();
                 new ClientHandler(socket, this, authService);
                 System.out.println("Client connected");
             }
-        } catch (IOException e) {
+        } catch (IOException | SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -44,16 +46,21 @@ public class ChatServer {
         broadcastClientList();
     }
 
-    public void broadcast(String msg) {
-        clients.values().forEach(client -> client.sendMessage(msg));
+    public void changeNick(String oldNick, ClientHandler client) {
+        clients.remove(oldNick);
+        clients.put(client.getNick(), client);
     }
 
-    private void broadcastClientList() {
+    public void broadcastClientList() {
         StringBuilder nicks = new StringBuilder();
         for (ClientHandler value : clients.values()) {
             nicks.append(value.getNick()).append(" ");
         }
         broadcast(Command.CLIENTS, nicks.toString().trim());
+    }
+
+    public void broadcast(String msg) {
+        clients.values().forEach(client -> client.sendMessage(msg));
     }
 
     private void broadcast(Command command, String nicks) {

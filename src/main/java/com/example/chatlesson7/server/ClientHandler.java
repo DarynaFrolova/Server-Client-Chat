@@ -6,6 +6,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +21,7 @@ public class ClientHandler {
     private final AuthService authService;
 
     private String nick;
+    private String login;
 
     private boolean isAuthenticatedWithTimeOut = true;
 
@@ -41,7 +45,7 @@ public class ClientHandler {
                         isAuthenticatedWithTimeOut = false;
                         closeConnection();
                     }
-                } catch (InterruptedException e) {
+                } catch (InterruptedException | SQLException | IOException e) {
                     e.printStackTrace();
                 }
 
@@ -49,7 +53,11 @@ public class ClientHandler {
                     try {
                         readMessages();
                     } finally {
-                        closeConnection();
+                        try {
+                            closeConnection();
+                        } catch (SQLException | IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -63,7 +71,16 @@ public class ClientHandler {
 
     }
 
-    private void closeConnection() {
+    private static void updateEx(Connection connection, String login, String newNick) throws SQLException {
+        try (final PreparedStatement statement = connection.prepareStatement("UPDATE users SET nick = ? WHERE login = ? ")) {
+            statement.setString(1, newNick);
+            statement.setString(2, login);
+            statement.executeUpdate();
+        }
+    }
+
+
+    public void closeConnection() throws SQLException, IOException {
         sendMessage("/end");
         try {
             if (in != null) {
@@ -90,6 +107,7 @@ public class ClientHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        authService.close();
     }
 
     private void authenticate() {
@@ -103,7 +121,7 @@ public class ClientHandler {
                     final Command command = Command.getCommand(str);
                     final String[] params = command.parse(str);
                     if (command == Command.AUTH) {
-                        final String login = params[0];
+                        login = params[0];
                         final String password = params[1];
                         final String nick = authService.getNickByLoginAndPassword(login, password);
                         if (nick != null) {
@@ -155,10 +173,21 @@ public class ClientHandler {
                         server.sendMessageToClient(this, params[0], params[1]);
                         continue;
                     }
+                    // Смена ника
+                    if (command == Command.NICK) {
+                        String temp = this.nick;
+                        this.nick = params[0];
+                        System.out.println("Nick successfully changed");
+                        sendMessage(msg);
+                        updateEx(DataBase.connection, this.login, this.nick);
+                        server.broadcastClientList();
+                        server.changeNick(temp, this);
+                        continue;
+                    }
                 }
                 server.broadcast(nick + ": " + msg);
             }
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
