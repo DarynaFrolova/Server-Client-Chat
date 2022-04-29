@@ -108,7 +108,7 @@ public class Controller {
         Platform.runLater(() -> clientList.getItems().addAll(params));
     }
 
-    // Запись локальной истории (с момента подключения конкретного клиента) в текстовый файл на клиенте
+    // Запись локальной истории (не будут видны личные сообщения, которыми обменивались другие клиенты) в текстовый файл на клиенте
     public void saveClientHistory() {
         try {
             String fileName = "history_" + client.getLogin() + ".txt";
@@ -125,7 +125,7 @@ public class Controller {
         }
     }
 
-    // Запись истории чата (с момента подключения первого клиента)
+    // Запись истории чата (для демонстрации при загрузке клиента)
     public void saveChatHistory() {
         try {
             File chatHistory = new File("history.txt");
