@@ -1,0 +1,16 @@
+Successful authorization under nick nick0
+nick0: 1
+nick0: 2
+nick0: 3
+User nick1 has entered the chat
+nick1: 1
+nick1: 2
+nick1: 3
+from nick1: hi
+to nick1: hi
+User nick2 has entered the chat
+nick2: 1
+nick2: 2
+nick2: 3
+to nick1: hi
+from nick1: hi
