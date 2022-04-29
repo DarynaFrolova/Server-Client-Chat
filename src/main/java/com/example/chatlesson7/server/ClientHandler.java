@@ -2,9 +2,7 @@ package com.example.chatlesson7.server;
 
 import com.example.chatlesson7.Command;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,10 +17,8 @@ public class ClientHandler {
     private final DataInputStream in;
     private final DataOutputStream out;
     private final AuthService authService;
-
+    public String login = "";
     private String nick;
-    private String login;
-
     private boolean isAuthenticatedWithTimeOut = true;
 
     public ClientHandler(Socket socket, ChatServer server, AuthService authService) {
@@ -129,7 +125,7 @@ public class ClientHandler {
                                 sendMessage(Command.ERROR, "User is already authorized");
                                 continue;
                             }
-                            sendMessage(Command.AUTHOK, nick);
+                            sendMessage(Command.AUTHOK, nick, login);
                             this.nick = nick;
                             server.broadcast("User " + nick + " has entered the chat");
                             server.subscribe(this);

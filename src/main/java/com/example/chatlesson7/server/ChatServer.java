@@ -46,6 +46,10 @@ public class ChatServer {
         broadcastClientList();
     }
 
+    public int getNumberOfClients(){
+        return clients.size();
+    }
+
     public void changeNick(String oldNick, ClientHandler client) {
         clients.remove(oldNick);
         clients.put(client.getNick(), client);

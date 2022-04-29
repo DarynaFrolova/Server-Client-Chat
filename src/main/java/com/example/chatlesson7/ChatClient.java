@@ -4,6 +4,7 @@ import javafx.application.Platform;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -15,8 +16,14 @@ public class ChatClient {
     private DataInputStream in;
     private DataOutputStream out;
 
+    private String login;
+
     public ChatClient(Controller controller) {
         this.controller = controller;
+    }
+
+    public String getLogin() {
+        return login;
     }
 
     public void openConnection() throws Exception {
@@ -69,6 +76,8 @@ public class ChatClient {
                 }
             }
             controller.addMessage(message);
+            controller.saveClientHistory();
+            controller.saveChatHistory();
         }
     }
 
@@ -80,6 +89,11 @@ public class ChatClient {
                 final String[] params = command.parse(msgAuth);
                 if (command == Command.AUTHOK) {
                     final String nick = params[0];
+                    login = params[1];
+                    File history = new File("history.txt");
+                    if (history.exists()) {
+                        controller.loadHistory();
+                    }
                     controller.addMessage("Successful authorization under nick " + nick);
                     controller.setAuth(true);
                     break;
