@@ -4,18 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb85f44a-9cd7-4bcb-ba94-4f1f4be1ff64" name="Changes" comment="Homework 8">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/DataBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat-lesson7.iml" beforeDir="false" afterPath="$PROJECT_DIR$/chat-lesson7.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/ChatClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/ChatClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/ChatServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/ChatServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/InMemoryAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/InMemoryAuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+    <list default="true" id="fb85f44a-9cd7-4bcb-ba94-4f1f4be1ff64" name="Changes" comment="Comment corrected">
+      <change beforePath="$PROJECT_DIR$/history.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/history_login0.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/history_login1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/javadb.db" beforeDir="false" afterPath="$PROJECT_DIR$/javadb.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +25,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="HW7" />
+        <entry key="$PROJECT_DIR$" value="HW8" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -72,7 +65,7 @@
       <recent name="com.example.chatlesson7" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.UIClient-1">
+  <component name="RunManager" selected="Application.UIClient-3">
     <configuration name="ServerRunner" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.chatlesson7.server.ServerRunner" />
       <module name="chat-lesson7" />
@@ -161,7 +154,28 @@
       <option name="project" value="LOCAL" />
       <updated>1650027632259</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Homework 2&#10;1. Authentication via DB (class Database)&#10;2. Nick change (class ClientHandler, method readMessages)">
+      <created>1651071343322</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1651071343323</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Homework 3&#10;1. Добавлена запись локальной истории в текстовый файл на клиенте. Для каждой учетной записи файл с историей называется history_[login].txt. (class Controller, methods saveClientHistory() and saveChatHistory())&#10;2. После загрузки клиента ему показываются последние 100 строк истории чата (class Controller, method loadHistory());">
+      <created>1651228839085</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1651228839086</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Comment corrected">
+      <created>1651233087519</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1651233087520</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -178,7 +192,10 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Homework 7" />
     <MESSAGE value="Homework 8" />
-    <option name="LAST_COMMIT_MESSAGE" value="Homework 8" />
+    <MESSAGE value="Homework 2&#10;1. Authentication via DB (class Database)&#10;2. Nick change (class ClientHandler, method readMessages)" />
+    <MESSAGE value="Homework 3&#10;1. Добавлена запись локальной истории в текстовый файл на клиенте. Для каждой учетной записи файл с историей называется history_[login].txt. (class Controller, methods saveClientHistory() and saveChatHistory())&#10;2. После загрузки клиента ему показываются последние 100 строк истории чата (class Controller, method loadHistory());" />
+    <MESSAGE value="Comment corrected" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comment corrected" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -16,10 +16,12 @@ public enum Command {
         }
     },
 
-    AUTHOK("/authok") {
+    AUTHOK("/authok") { // /authok login0
+
         @Override
-        public String[] parse(String commandText) { //  /authok nick1
-            return new String[]{commandText.split(COMMAND_DELIMITER)[1]};
+        public String[] parse(String commandText) {
+            final String[] split = commandText.split(COMMAND_DELIMITER);
+            return new String[]{split[1], split[2]};
         }
     },
 
