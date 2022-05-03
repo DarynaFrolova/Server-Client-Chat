@@ -19,7 +19,7 @@ public class ChatServer {
 
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(8189);
-             AuthService authService = new DataBase()) {
+             AuthService authService = new DataBaseAuthService()) {
             authService.run();
             while (true) {
                 System.out.println("Wait client connection...");
