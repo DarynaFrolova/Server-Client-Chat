@@ -4,37 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb85f44a-9cd7-4bcb-ba94-4f1f4be1ff64" name="Changes" comment="1. Создание таблицы и внесение в неё пользователей вынесено в liquibase&#10;2. Добавлены блоки try-with-resources&#10;3. История чата вынесена в отдельный класс ChatHistory">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_xerial_sqlite_jdbc_3_36_0_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db.changelog-1.0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db.changelog-2.0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db.changelog-master.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/liquibase.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_11_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_mac_11_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_11_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_mac_11_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_11_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_mac_11_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_11_0_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_mac_11_0_2.xml" beforeDir="false" />
+    <list default="true" id="fb85f44a-9cd7-4bcb-ba94-4f1f4be1ff64" name="Changes" comment="1. Создание таблицы и внесение в неё пользователей вынесено в liquibase&#10;2. Добавлены блоки try-with-resources&#10;3. История чата вынесена в отдельный класс ChatHistory&#10;4. На серверной стороне сетевого чата реализовано управление потоками через ExecutorService&#10;5. Задание 1 д/з урока 4: package TempHomework4">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat-lesson7.iml" beforeDir="false" afterPath="$PROJECT_DIR$/chat-lesson7.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/history.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/history_login0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/history_login1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/history_login2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/javadb.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/ChatClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/ChatClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/ChatServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/ChatServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/DataBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/DataBaseAuthService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -248,7 +219,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651233712833</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="1. Создание таблицы и внесение в неё пользователей вынесено в liquibase&#10;2. Добавлены блоки try-with-resources&#10;3. История чата вынесена в отдельный класс ChatHistory&#10;4. На серверной стороне сетевого чата реализовано управление потоками через ExecutorService&#10;5. Задание 1 д/з урока 4: package TempHomework4">
+      <created>1651585487368</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1651585487369</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -270,7 +248,8 @@
     <MESSAGE value="Comment corrected" />
     <MESSAGE value="History files added" />
     <MESSAGE value="excess method deleted" />
-    <option name="LAST_COMMIT_MESSAGE" value="excess method deleted" />
+    <MESSAGE value="1. Создание таблицы и внесение в неё пользователей вынесено в liquibase&#10;2. Добавлены блоки try-with-resources&#10;3. История чата вынесена в отдельный класс ChatHistory&#10;4. На серверной стороне сетевого чата реализовано управление потоками через ExecutorService&#10;5. Задание 1 д/з урока 4: package TempHomework4" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. Создание таблицы и внесение в неё пользователей вынесено в liquibase&#10;2. Добавлены блоки try-with-resources&#10;3. История чата вынесена в отдельный класс ChatHistory&#10;4. На серверной стороне сетевого чата реализовано управление потоками через ExecutorService&#10;5. Задание 1 д/з урока 4: package TempHomework4" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -279,11 +258,6 @@
           <properties class="java.lang.IllegalStateException" package="java.lang" />
           <option name="timeStamp" value="1" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/example/chatlesson7/server/ClientHandler.java</url>
-          <line>113</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

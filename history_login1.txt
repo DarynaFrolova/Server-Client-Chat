@@ -1,0 +1,13 @@
+Successful authorization under nick nick0
+nick0: 1
+nick0: 2
+nick0: 3
+Nick successfully changed to john
+john: 1
+john: 2
+john: 3
+User nick1 has entered the chat
+Successful authorization under nick nick1
+to john: hi
+from john: hi
+User john has left the chat
