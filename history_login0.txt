@@ -11,3 +11,11 @@ Successful authorization under nick nick1
 User john has left the chat
 Successful authorization under nick john
 john: 1
+Successful authorization under nick john
+john: 1
+john: 2
+john: 3
+Successful authorization under nick john
+john: 1
+john: 2
+john: 3

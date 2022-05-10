@@ -10,16 +10,20 @@ import java.sql.SQLException;
 import java.util.concurrent.*;
 
 public class ClientHandler {
+    private static final int AUTH_TIMEOUT = 120_000;
     private final Socket socket;
     private final ChatServer server;
     private final DataInputStream in;
     private final DataOutputStream out;
     private final AuthService authService;
+    private final Future<Void> timeoutFuture;
     public String login = "";
     private String nick;
-    private boolean isAuthenticatedWithTimeOut = true;
 
-    public ClientHandler(Socket socket, ChatServer server, AuthService authService) {
+    public ClientHandler(Socket socket,
+                         ChatServer server,
+                         AuthService authService,
+                         ExecutorService executorService) {
         try {
             this.nick = "";
             this.socket = socket;
@@ -28,35 +32,25 @@ public class ClientHandler {
             this.out = new DataOutputStream(socket.getOutputStream());
             this.authService = authService;
 
-            ExecutorService executorServiceOuter = Executors.newSingleThreadExecutor();
-            executorServiceOuter.submit(() -> {
-                        // Отключение неавторизованных пользователей по тайм-ауту 120 сек.
-                        ExecutorService executorServiceInner = Executors.newSingleThreadExecutor();
-                        executorServiceInner.submit(() -> authenticate());
-                        executorServiceInner.shutdown();
-                        try {
-                            if (!executorServiceInner.awaitTermination(120, TimeUnit.SECONDS)) {
-                                isAuthenticatedWithTimeOut = false;
-                                closeConnection();
-                            }
-                        } catch (InterruptedException | SQLException | IOException e) {
-                            e.printStackTrace();
-                        }
+            executorService.submit(() -> {
+                try {
+                    authenticate();
+                    readMessages();
+                } finally {
+                    closeConnection();
+                }
+            });
 
-                        if (isAuthenticatedWithTimeOut) {
-                            try {
-                                readMessages();
-                            } finally {
-                                try {
-                                    closeConnection();
-                                } catch (SQLException | IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-            );
-            executorServiceOuter.shutdown();
+            timeoutFuture = executorService.submit(() -> {
+                try {
+                    Thread.sleep(AUTH_TIMEOUT);
+                    System.out.println("Time is over, stop client");
+                    closeConnection();
+                } catch (InterruptedException ignored) {
+                }
+                return null;
+            });
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -70,8 +64,7 @@ public class ClientHandler {
         }
     }
 
-
-    public void closeConnection() throws SQLException, IOException {
+    private void closeConnection() {
         sendMessage("/end");
         try {
             if (in != null) {
@@ -90,23 +83,16 @@ public class ClientHandler {
         try {
             if (socket != null) {
                 server.unsubscribe(this);
-                if (isAuthenticatedWithTimeOut) {
-                    server.broadcast("User " + nick + " has left the chat");
-                }
                 socket.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        authService.close();
     }
 
     private void authenticate() {
         while (true) {
             try {
-                if (!isAuthenticatedWithTimeOut) {
-                    break;
-                }
                 final String str = in.readUTF();
                 if (Command.isCommand(str)) {
                     final Command command = Command.getCommand(str);
@@ -120,6 +106,7 @@ public class ClientHandler {
                                 sendMessage(Command.ERROR, "User is already authorized");
                                 continue;
                             }
+                            this.timeoutFuture.cancel(true);
                             sendMessage(Command.AUTHOK, nick, login);
                             this.nick = nick;
                             server.broadcast("User " + nick + " has entered the chat");
@@ -132,6 +119,7 @@ public class ClientHandler {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                break;
             }
         }
     }
