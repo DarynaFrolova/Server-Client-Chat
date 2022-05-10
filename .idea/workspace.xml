@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb85f44a-9cd7-4bcb-ba94-4f1f4be1ff64" name="Changes" comment="Comment corrected">
-      <change beforePath="$PROJECT_DIR$/history.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/history_login0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/history_login1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/javadb.db" beforeDir="false" afterPath="$PROJECT_DIR$/javadb.db" afterDir="false" />
+    <list default="true" id="fb85f44a-9cd7-4bcb-ba94-4f1f4be1ff64" name="Changes" comment="1. Создание таблицы и внесение в неё пользователей вынесено в liquibase&#10;2. Добавлены блоки try-with-resources&#10;3. История чата вынесена в отдельный класс ChatHistory&#10;4. На серверной стороне сетевого чата реализовано управление потоками через ExecutorService&#10;5. Задание 1 д/з урока 4: package TempHomework4">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="HW8" />
+        <entry key="$PROJECT_DIR$" value="HomeWork3" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,7 +31,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="27duKUMWiBQWJ2v6ispa72WRtD2" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="autoscrollToSource" value="true" />
@@ -46,18 +45,22 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/com/example/chatlesson7" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="project.structure.side.proportion" value="0.2954023" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
       <recent name="$PROJECT_DIR$/src/main/java/com/example/chatlesson7" />
       <recent name="$PROJECT_DIR$/src/main/resources/com/example/chatlesson7" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/.idea" />
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$APPLICATION_CONFIG_DIR$/scratches" />
       <recent name="$PROJECT_DIR$/src/main/java/com/example/chatlesson7" />
     </key>
@@ -65,7 +68,12 @@
       <recent name="com.example.chatlesson7" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.UIClient-3">
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn liquibase:update" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Application.UIClient-1">
     <configuration name="ServerRunner" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.chatlesson7.server.ServerRunner" />
       <module name="chat-lesson7" />
@@ -118,16 +126,31 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="WaitNotifyApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.chatlesson7.TempHomework4.WaitNotifyApp" />
+      <module name="chat-lesson7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.chatlesson7.TempHomework4.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.UIClient-2" />
       <item itemvalue="Application.UIClient-3" />
       <item itemvalue="Application.ServerRunner" />
       <item itemvalue="Application.UIClient-1" />
+      <item itemvalue="Application.WaitNotifyApp" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.UIClient-1" />
         <item itemvalue="Application.ServerRunner" />
+        <item itemvalue="Application.WaitNotifyApp" />
       </list>
     </recent_temporary>
   </component>
@@ -175,7 +198,35 @@
       <option name="project" value="LOCAL" />
       <updated>1651233087520</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Comment corrected">
+      <created>1651233356761</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1651233356761</updated>
+    </task>
+    <task id="LOCAL-00007" summary="History files added">
+      <created>1651233392616</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1651233392616</updated>
+    </task>
+    <task id="LOCAL-00008" summary="excess method deleted">
+      <created>1651233712833</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1651233712833</updated>
+    </task>
+    <task id="LOCAL-00009" summary="1. Создание таблицы и внесение в неё пользователей вынесено в liquibase&#10;2. Добавлены блоки try-with-resources&#10;3. История чата вынесена в отдельный класс ChatHistory&#10;4. На серверной стороне сетевого чата реализовано управление потоками через ExecutorService&#10;5. Задание 1 д/з урока 4: package TempHomework4">
+      <created>1651585487368</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1651585487369</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -195,7 +246,10 @@
     <MESSAGE value="Homework 2&#10;1. Authentication via DB (class Database)&#10;2. Nick change (class ClientHandler, method readMessages)" />
     <MESSAGE value="Homework 3&#10;1. Добавлена запись локальной истории в текстовый файл на клиенте. Для каждой учетной записи файл с историей называется history_[login].txt. (class Controller, methods saveClientHistory() and saveChatHistory())&#10;2. После загрузки клиента ему показываются последние 100 строк истории чата (class Controller, method loadHistory());" />
     <MESSAGE value="Comment corrected" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comment corrected" />
+    <MESSAGE value="History files added" />
+    <MESSAGE value="excess method deleted" />
+    <MESSAGE value="1. Создание таблицы и внесение в неё пользователей вынесено в liquibase&#10;2. Добавлены блоки try-with-resources&#10;3. История чата вынесена в отдельный класс ChatHistory&#10;4. На серверной стороне сетевого чата реализовано управление потоками через ExecutorService&#10;5. Задание 1 д/з урока 4: package TempHomework4" />
+    <option name="LAST_COMMIT_MESSAGE" value="1. Создание таблицы и внесение в неё пользователей вынесено в liquibase&#10;2. Добавлены блоки try-with-resources&#10;3. История чата вынесена в отдельный класс ChatHistory&#10;4. На серверной стороне сетевого чата реализовано управление потоками через ExecutorService&#10;5. Задание 1 д/з урока 4: package TempHomework4" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

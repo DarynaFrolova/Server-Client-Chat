@@ -1,11 +1,9 @@
 package com.example.chatlesson7;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 
+import com.example.chatlesson7.server.ChatHistory;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,8 +29,12 @@ public class Controller {
     @FXML
     private TextArea textArea;
 
+    public TextArea getTextArea() {
+        return textArea;
+    }
+
     public Controller() {
-        client = new ChatClient(this);
+        client = new ChatClient(this, new ChatHistory());
         while (true) {
             try {
                 client.openConnection();
@@ -106,58 +108,5 @@ public class Controller {
     public void updateClientList(String[] params) {
         Platform.runLater(() -> clientList.getItems().clear());
         Platform.runLater(() -> clientList.getItems().addAll(params));
-    }
-
-    // Запись локальной истории (не будут видны личные сообщения, которыми обменивались другие клиенты) в текстовый файл на клиенте
-    public void saveClientHistory() {
-        try {
-            String fileName = "history_" + client.getLogin() + ".txt";
-            File userHistory = new File(fileName);
-
-            PrintWriter fileWriter1 = new PrintWriter(new FileWriter(userHistory, false));
-
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter1);
-            bufferedWriter.write(textArea.getText());
-            bufferedWriter.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Запись истории чата (для демонстрации при загрузке клиента)
-    public void saveChatHistory() {
-        try {
-            File chatHistory = new File("history.txt");
-            PrintWriter fileWriter2 = new PrintWriter(new FileWriter(chatHistory, false));
-            BufferedWriter bufferedWriter2 = new BufferedWriter(fileWriter2);
-            bufferedWriter2.write(textArea.getText());
-            bufferedWriter2.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Демонстрация последних 100 строк истории чата
-    public void loadHistory() throws IOException {
-        int maxLines = 100;
-        List<String> historyList = new ArrayList<>();
-        FileInputStream in = new FileInputStream("history.txt");
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-
-        String temp;
-        while ((temp = bufferedReader.readLine()) != null) {
-            if (!temp.startsWith("to ") && !temp.startsWith("from ")) {
-                if (historyList.size() == maxLines) {
-                    historyList.remove(0);
-                }
-                historyList.add(temp);
-            }
-        }
-
-        for (String s : historyList) {
-            textArea.appendText(s + "\n");
-        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.chatlesson7;
 
+import com.example.chatlesson7.server.ChatHistory;
 import javafx.application.Platform;
 
 import java.io.DataInputStream;
@@ -18,8 +19,11 @@ public class ChatClient {
 
     private String login;
 
-    public ChatClient(Controller controller) {
+    private final ChatHistory history;
+
+    public ChatClient(Controller controller, ChatHistory history) {
         this.controller = controller;
+        this.history = history;
     }
 
     public String getLogin() {
@@ -76,8 +80,8 @@ public class ChatClient {
                 }
             }
             controller.addMessage(message);
-            controller.saveClientHistory();
-            controller.saveChatHistory();
+            history.saveClientHistory(controller, this.login);
+            history.saveChatHistory(controller);
         }
     }
 
@@ -90,9 +94,9 @@ public class ChatClient {
                 if (command == Command.AUTHOK) {
                     final String nick = params[0];
                     login = params[1];
-                    File history = new File("history.txt");
-                    if (history.exists()) {
-                        controller.loadHistory();
+                    File historyFile = new File("history.txt");
+                    if (historyFile.exists()) {
+                        history.loadHistory(controller);
                     }
                     controller.addMessage("Successful authorization under nick " + nick);
                     controller.setAuth(true);

@@ -7,9 +7,7 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class ClientHandler {
     private final Socket socket;
@@ -30,41 +28,38 @@ public class ClientHandler {
             this.out = new DataOutputStream(socket.getOutputStream());
             this.authService = authService;
 
-            // Отключение неавторизованных пользователей по тайм-ауту 120 сек.
-            Thread thread = new Thread(() -> {
-
-                ExecutorService executorService = Executors.newSingleThreadExecutor();
-                executorService.submit(() -> authenticate());
-                executorService.shutdown();
-                try {
-                    if (!executorService.awaitTermination(120, TimeUnit.SECONDS)) {
-                        isAuthenticatedWithTimeOut = false;
-                        closeConnection();
-                    }
-                } catch (InterruptedException | SQLException | IOException e) {
-                    e.printStackTrace();
-                }
-
-                if (isAuthenticatedWithTimeOut) {
-                    try {
-                        readMessages();
-                    } finally {
+            ExecutorService executorServiceOuter = Executors.newSingleThreadExecutor();
+            executorServiceOuter.submit(() -> {
+                        // Отключение неавторизованных пользователей по тайм-ауту 120 сек.
+                        ExecutorService executorServiceInner = Executors.newSingleThreadExecutor();
+                        executorServiceInner.submit(() -> authenticate());
+                        executorServiceInner.shutdown();
                         try {
-                            closeConnection();
-                        } catch (SQLException | IOException e) {
+                            if (!executorServiceInner.awaitTermination(120, TimeUnit.SECONDS)) {
+                                isAuthenticatedWithTimeOut = false;
+                                closeConnection();
+                            }
+                        } catch (InterruptedException | SQLException | IOException e) {
                             e.printStackTrace();
                         }
-                    }
-                }
-            }
-            );
-            thread.setDaemon(true);
-            thread.start();
 
+                        if (isAuthenticatedWithTimeOut) {
+                            try {
+                                readMessages();
+                            } finally {
+                                try {
+                                    closeConnection();
+                                } catch (SQLException | IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+            );
+            executorServiceOuter.shutdown();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private static void updateEx(Connection connection, String login, String newNick) throws SQLException {
@@ -175,7 +170,7 @@ public class ClientHandler {
                         this.nick = params[0];
                         System.out.println("Nick successfully changed");
                         sendMessage(msg);
-                        updateEx(DataBase.connection, this.login, this.nick);
+                        updateEx(DataBaseAuthService.connection, this.login, this.nick);
                         server.broadcastClientList();
                         server.changeNick(temp, this);
                         continue;

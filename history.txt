@@ -2,15 +2,12 @@ Successful authorization under nick nick0
 nick0: 1
 nick0: 2
 nick0: 3
+Nick successfully changed to john
+john: 1
+john: 2
+john: 3
 User nick1 has entered the chat
-nick1: 1
-nick1: 2
-nick1: 3
-from nick1: hi
-to nick1: hi
-User nick2 has entered the chat
-nick2: 1
-nick2: 2
-nick2: 3
-to nick1: hi
-from nick1: hi
+Successful authorization under nick nick1
+User john has left the chat
+Successful authorization under nick john
+john: 1
