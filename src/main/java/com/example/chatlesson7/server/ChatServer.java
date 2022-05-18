@@ -11,8 +11,12 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ChatServer {
 
+    private static final Logger LOGGER = LogManager.getLogger(ChatServer.class);
     private final Map<String, ClientHandler> clients;
 
     public ChatServer() {
@@ -23,19 +27,16 @@ public class ChatServer {
         final ExecutorService executorService = Executors.newCachedThreadPool();
         try (ServerSocket serverSocket = new ServerSocket(8189);
              AuthService authService = new DataBaseAuthService()) {
-            authService.run();
             while (true) {
-                System.out.println("Wait client connection...");
+                LOGGER.info("Wait client connection...");
                 final Socket socket = serverSocket.accept();
                 new ClientHandler(socket, this, authService, executorService);
-                System.out.println("Client connected");
+                LOGGER.info("Client connected");
             }
         } catch (IOException | SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         } finally {
-            {
-                executorService.shutdownNow();
-            }
+            executorService.shutdownNow();
         }
     }
 
@@ -82,6 +83,7 @@ public class ChatServer {
             receiver.sendMessage("from " + sender.getNick() + ": " + message);
             sender.sendMessage("to " + to + ": " + message);
         } else {
+            LOGGER.info("User {} has tried to send a private message to user \"{}\" who is not in the chat", sender.getNick(), to);
             sender.sendMessage(Command.ERROR, "There is no user with nick " + to + " in chat!");
         }
     }

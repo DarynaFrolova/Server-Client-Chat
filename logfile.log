@@ -1,0 +1,34 @@
+INFO  2022-05-18 17:53:13 main                 DataBaseAuthService.java    :37    - AuthService run
+INFO  2022-05-18 17:53:13 main                 ChatServer.java             :31    - Wait client connection...
+INFO  2022-05-18 17:53:18 main                 ChatServer.java             :34    - Client connected
+INFO  2022-05-18 17:53:18 main                 ChatServer.java             :31    - Wait client connection...
+INFO  2022-05-18 17:53:25 pool-2-thread-1      ClientHandler.java          :125   - Successful authorization. User Mike has entered the chat
+INFO  2022-05-18 17:53:34 main                 ChatServer.java             :34    - Client connected
+INFO  2022-05-18 17:53:34 main                 ChatServer.java             :31    - Wait client connection...
+INFO  2022-05-18 17:53:40 pool-2-thread-2      ClientHandler.java          :118   - Authorization declined. User with these login and password is already authorized
+INFO  2022-05-18 17:53:44 pool-2-thread-2      ClientHandler.java          :130   - Authorization declined. User has entered wrong login and password
+INFO  2022-05-18 17:53:49 pool-2-thread-2      ClientHandler.java          :125   - Successful authorization. User Steward has entered the chat
+INFO  2022-05-18 17:54:02 pool-2-thread-2      ClientHandler.java          :174   - Nick of Steward successfully changed to John
+INFO  2022-05-18 17:54:18 pool-2-thread-1      ClientHandler.java          :78    - User Mike has left the chat
+INFO  2022-05-18 17:55:32 main                 DataBaseAuthService.java    :37    - AuthService run
+INFO  2022-05-18 17:55:32 main                 ChatServer.java             :31    - Wait client connection...
+INFO  2022-05-18 17:55:35 main                 ChatServer.java             :34    - Client connected
+INFO  2022-05-18 17:55:35 main                 ChatServer.java             :31    - Wait client connection...
+INFO  2022-05-18 17:55:41 pool-2-thread-1      ClientHandler.java          :125   - Successful authorization. User Mike has entered the chat
+INFO  2022-05-18 17:55:49 main                 ChatServer.java             :34    - Client connected
+INFO  2022-05-18 17:55:49 main                 ChatServer.java             :31    - Wait client connection...
+INFO  2022-05-18 17:55:55 pool-2-thread-2      ClientHandler.java          :125   - Successful authorization. User John has entered the chat
+INFO  2022-05-18 17:56:04 pool-2-thread-2      ChatServer.java             :86    - User John has tried to send a private message to user "mike" who is not in the chat
+INFO  2022-05-18 17:56:33 pool-2-thread-2      ClientHandler.java          :78    - User John has left the chat
+INFO  2022-05-18 17:56:37 pool-2-thread-1      ClientHandler.java          :78    - User Mike has left the chat
+INFO  2022-05-18 17:56:47 main                 ChatServer.java             :34    - Client connected
+INFO  2022-05-18 17:56:47 main                 ChatServer.java             :31    - Wait client connection...
+WARN  2022-05-18 17:58:47 pool-2-thread-2      ClientHandler.java          :54    - Time is over, stop client
+ERROR 2022-05-18 17:58:47 pool-2-thread-1      ClientHandler.java          :136   - java.net.SocketException: Socket closed
+ERROR 2022-05-18 17:58:47 pool-2-thread-1      ClientHandler.java          :185   - java.net.SocketException: Socket closed
+ERROR 2022-05-18 17:58:47 pool-2-thread-1      ClientHandler.java          :151   - java.net.SocketException: Socket closed
+ERROR 2022-05-18 17:58:47 Thread-4             ChatClient.java             :45    - java.io.EOFException
+INFO  2022-05-18 18:00:27 main                 ChatServer.java             :34    - Client connected
+INFO  2022-05-18 18:00:27 main                 ChatServer.java             :31    - Wait client connection...
+INFO  2022-05-18 18:00:33 pool-2-thread-4      ClientHandler.java          :125   - Successful authorization. User Mike has entered the chat
+INFO  2022-05-18 18:00:36 pool-2-thread-4      ClientHandler.java          :78    - User Mike has left the chat

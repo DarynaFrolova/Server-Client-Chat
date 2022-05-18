@@ -10,16 +10,18 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ChatClient {
 
+    private static final Logger LOGGER = LogManager.getLogger(ChatClient.class);
     private final Controller controller;
+    private final ChatHistory history;
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
-
     private String login;
-
-    private final ChatHistory history;
 
     public ChatClient(Controller controller, ChatHistory history) {
         this.controller = controller;
@@ -40,12 +42,12 @@ public class ChatClient {
                 waitAuthenticate();
                 readMessage();
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.error(e);
             } finally {
                 try {
                     closeConnection();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    LOGGER.error(e);
                 }
             }
         });
@@ -58,7 +60,8 @@ public class ChatClient {
     private void readMessage() throws IOException {
         while (true) {
             final String message = in.readUTF();
-            System.out.println("Receive message: " + message);
+            LOGGER.trace("Receive message: {}", message);
+            ;
             if (Command.isCommand(message)) {
                 final Command command = Command.getCommand(message);
                 final String[] params = command.parse(message);
@@ -114,21 +117,21 @@ public class ChatClient {
             try {
                 socket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(e);
             }
         }
         if (in != null) {
             try {
                 in.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(e);
             }
         }
         if (out != null) {
             try {
                 out.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(e);
             }
         }
         System.exit(0);
@@ -136,10 +139,10 @@ public class ChatClient {
 
     public void sendMessage(String message) {
         try {
-            System.out.println("Send message: " + message);
+            LOGGER.trace("Send message: {} ", message);
             out.writeUTF(message);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 

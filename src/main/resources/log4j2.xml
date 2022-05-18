@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Configuration>
+    <Appenders>
+        <File name="to_file" fileName="logfile.log" append="true">
+            <PatternLayout pattern="%-5p %d{yyyy-MM-dd HH:mm:ss} %-20t %-28F:%-5L - %m%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.example.chatlesson7.server.ChatServer" level="all" additivity = "false">
+            <AppenderRef ref="to_file"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="to_file"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -9,8 +9,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ClientHandler {
     private static final int AUTH_TIMEOUT = 120_000;
+    private static final Logger LOGGER = LogManager.getLogger(ClientHandler.class);
     private final Socket socket;
     private final ChatServer server;
     private final DataInputStream in;
@@ -19,6 +23,7 @@ public class ClientHandler {
     private final Future<Void> timeoutFuture;
     public String login = "";
     private String nick;
+    private boolean authenticatedWithinTimeout;
 
     public ClientHandler(Socket socket,
                          ChatServer server,
@@ -31,6 +36,7 @@ public class ClientHandler {
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
             this.authService = authService;
+            this.authenticatedWithinTimeout = true;
 
             executorService.submit(() -> {
                 try {
@@ -44,7 +50,8 @@ public class ClientHandler {
             timeoutFuture = executorService.submit(() -> {
                 try {
                     Thread.sleep(AUTH_TIMEOUT);
-                    System.out.println("Time is over, stop client");
+                    this.authenticatedWithinTimeout = false;
+                    LOGGER.warn("Time is over, stop client");
                     closeConnection();
                 } catch (InterruptedException ignored) {
                 }
@@ -52,6 +59,7 @@ public class ClientHandler {
             });
 
         } catch (IOException e) {
+            LOGGER.error(e);
             throw new RuntimeException(e);
         }
     }
@@ -66,19 +74,23 @@ public class ClientHandler {
 
     private void closeConnection() {
         sendMessage("/end");
+        if (authenticatedWithinTimeout) {
+            LOGGER.info("User {} has left the chat", nick);
+            server.broadcast("User " + nick + " has left the chat");
+        }
         try {
             if (in != null) {
                 in.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         try {
             if (out != null) {
                 out.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         try {
             if (socket != null) {
@@ -86,7 +98,7 @@ public class ClientHandler {
                 socket.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -103,22 +115,25 @@ public class ClientHandler {
                         final String nick = authService.getNickByLoginAndPassword(login, password);
                         if (nick != null) {
                             if (server.isNickBusy(nick)) {
+                                LOGGER.info("Authorization declined. User with these login and password is already authorized");
                                 sendMessage(Command.ERROR, "User is already authorized");
                                 continue;
                             }
                             this.timeoutFuture.cancel(true);
                             sendMessage(Command.AUTHOK, nick, login);
                             this.nick = nick;
+                            LOGGER.info("Successful authorization. User {} has entered the chat", nick);
                             server.broadcast("User " + nick + " has entered the chat");
                             server.subscribe(this);
                             break;
                         } else {
+                            LOGGER.info("Authorization declined. User has entered wrong login and password");
                             sendMessage(Command.ERROR, "Wrong login and password");
                         }
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(e);
                 break;
             }
         }
@@ -130,10 +145,10 @@ public class ClientHandler {
 
     public void sendMessage(String message) {
         try {
-            System.out.println("SERVER: Send message to " + nick);
+            LOGGER.trace("SERVER: Send message to {}", nick);
             out.writeUTF(message);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -141,7 +156,7 @@ public class ClientHandler {
         try {
             while (true) {
                 final String msg = in.readUTF();
-                System.out.println("Receive message: " + msg);
+                LOGGER.trace("Receive message: {}", msg);
                 if (Command.isCommand(msg)) {
                     final Command command = Command.getCommand(msg);
                     final String[] params = command.parse(msg);
@@ -156,7 +171,7 @@ public class ClientHandler {
                     if (command == Command.NICK) {
                         String temp = this.nick;
                         this.nick = params[0];
-                        System.out.println("Nick successfully changed");
+                        LOGGER.info("Nick of {} successfully changed to {}", temp, params[0]);
                         sendMessage(msg);
                         updateEx(DataBaseAuthService.connection, this.login, this.nick);
                         server.broadcastClientList();
@@ -167,7 +182,7 @@ public class ClientHandler {
                 server.broadcast(nick + ": " + msg);
             }
         } catch (IOException | SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 

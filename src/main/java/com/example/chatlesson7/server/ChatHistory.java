@@ -6,18 +6,23 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ChatHistory {
+
+    private static final Logger LOGGER = LogManager.getLogger(ChatHistory.class);
 
     // Запись локальной истории (не будут видны личные сообщения, которыми обменивались другие клиенты) в текстовый файл на клиенте
     public void saveClientHistory(Controller controller, String login) {
-        String fileName  = "history_" + login + ".txt";
+        String fileName = "history_" + login + ".txt";
         File userHistory = new File(fileName);
 
         try (PrintWriter fileWriter1 = new PrintWriter(new FileWriter(userHistory, false));
              BufferedWriter bufferedWriter = new BufferedWriter(fileWriter1)) {
             bufferedWriter.write(controller.getTextArea().getText());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -30,7 +35,7 @@ public class ChatHistory {
             bufferedWriter2.write(controller.getTextArea().getText());
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 

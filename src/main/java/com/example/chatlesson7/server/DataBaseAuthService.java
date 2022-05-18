@@ -1,14 +1,17 @@
 package com.example.chatlesson7.server;
 
 import java.sql.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DataBaseAuthService implements AuthService {
 
     public static Connection connection;
+    private static final Logger LOGGER = LogManager.getLogger(DataBaseAuthService.class);
 
     public DataBaseAuthService() throws SQLException, ClassNotFoundException {
         run();
-        select(connection); // (для проверки)
+        //select(connection); // (для проверки)
     }
 
     @Override
@@ -22,7 +25,7 @@ public class DataBaseAuthService implements AuthService {
                 return rs.getString("nick");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return null;
     }
@@ -31,26 +34,28 @@ public class DataBaseAuthService implements AuthService {
     public void run() {
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:javadb.db");
-            System.out.println("AuthService run");
+            LOGGER.info("AuthService run");
         } catch (SQLException e) {
+            LOGGER.error("Error. Cannot connect to Database", e);
             throw new RuntimeException("Error. Cannot connect to Database", e);
         }
     }
 
     @Override
     public void close() {
-        try {
-            select(connection); // (для проверки изменения ников)
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            select(connection); // (для проверки изменения ников)
+//        } catch (SQLException e) {
+//            LOGGER.error(e);
+//        }
 
         try {
             if (connection != null) {
                 connection.close();
-                System.out.println("AuthService closed");
+                LOGGER.info("AuthService closed");
             }
         } catch (SQLException e) {
+            LOGGER.error("Error. Cannot close connection with Database", e);
             throw new RuntimeException("Error. Cannot close connection with Database", e);
         }
     }
@@ -63,7 +68,7 @@ public class DataBaseAuthService implements AuthService {
                 String login = rs.getString(2);
                 String pass = rs.getString(3);
                 String nick = rs.getString(4);
-                System.out.printf("%d - %s - %s - %s\n", id, login, pass, nick);
+                LOGGER.info("{} - {} - {} - {}\n", id, login, pass, nick);
             }
         }
     }
